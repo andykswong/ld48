@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>LD48</title>
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Lobster+Two&display=swap" rel="stylesheet">
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Lobster Two', Helvetica, sans-serif;
+      color: #dff6f5;
+    }
+    
+    #game {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background : linear-gradient(#564064, #39314b);
+    }
+
+    #score {
+      position: absolute;
+      top: 5%;
+      right: 5%;
+      font-size: 4vw;
+    }
+    
+    #time {
+      position: absolute;
+      top: 5%;
+      left: 5%;
+      font-size: 4vw;
+      display: none;
+    }
+
+    #gameover {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      font-size: 3.5vw;
+      text-align: center;
+      margin: 0 auto;
+      width: 100%;
+      height: 25%;
+      overflow: hidden;
+      display: none;
+    }
+
+    #title {
+      pointer-events: none;
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      font-size: 8vw;
+      text-align: center;
+      margin: 0 auto;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      justify-content: center;
+      display: flex;
+      align-items: center;
+      flex-direction: column;
+      cursor: pointer;
+    }
+
+    #title div {
+      justify-content: center;
+      display: flex;
+      align-items: center;
+      width: 85%;
+    }
+
+    #title #graveyard {
+      padding-left: 1rem;
+      font-size: 10vw;
+    }
+
+    #start {
+      margin-top: 10rem;
+      font-size: 4vw;
+    }
+  </style>
+</head>
+<body>
+  <div id="game">
+    <div id="time">00:00:00</div>
+    <div id="score">0m</div>
+    <div id="title">
+      <div>Deep in the <span id="graveyard">GraveYard</span></div>
+      <div id="start">Click to Start</div>
+    </div>
+    <div id="gameover"></div>
+  </div>
+  <script src="ld48.min.js"></script>
+  <audio id="bgmusic" controls loop style="display: none">
+    <source src="./spooky.mp3" type="audio/mp3" />
+  </audio>
+</body>
+</html>

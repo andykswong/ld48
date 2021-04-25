@@ -1,0 +1,49 @@
+{
+  "name": "ld48",
+  "version": "1.0.0",
+  "description": "Ludum Dare 48 Game",
+  "homepage": "https://github.com/andykswong/ld48",
+  "author": "Andy K.S. Wong <andykswong@outlook.com>",
+  "license": "MIT",
+  "private": true,
+  "main": "./dist/ld48.min.js",
+  "files": [
+    "/dist",
+    "/src"
+  ],
+  "scripts": {
+    "clean": "rimraf dist node_modules",
+    "lint": "eslint . --ext .ts,.tsx --fix",
+    "prebuild": "npm run lint",
+    "build": "tsc",
+    "postbuild": "npm run build:bundle",
+    "build:bundle": "webpack",
+    "pretest": "npm run build",
+    "test": "echo \"pass\"",
+    "start": "cross-env NODE_ENV=development webpack serve"
+  },
+  "dependencies": {
+    "gsap": "^3.6.1",
+    "three": "^0.128.0"
+  },
+  "devDependencies": {
+    "@types/gsap": "^1.20.2",
+    "@types/node": "^14.14.25",
+    "@types/three": "^0.127.1",
+    "@typescript-eslint/eslint-plugin": "^4.2.0",
+    "@typescript-eslint/parser": "^4.2.0",
+    "copy-webpack-plugin": "^8.1.1",
+    "cross-env": "^7.0.3",
+    "eslint": "^7.24.0",
+    "rimraf": "^3.0.2",
+    "source-map-loader": "^2.0.0",
+    "ts-essentials": "^7.0.1",
+    "ts-loader": "^8.0.12",
+    "typedoc": "^0.20.24",
+    "typescript": "^4.2.4",
+    "webpack": "^5.31.2",
+    "webpack-cli": "^4.2.0",
+    "webpack-dev-server": "^3.11.0",
+    "webpack-merge": "^5.7.3"
+  }
+}
