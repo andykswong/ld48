@@ -147,12 +147,12 @@ export class Game {
 
       let mob: Mob;
       if (
-        (znear >= 20 && type > (3 - Math.min(0.2, znear/1000) - Math.min(0.1, this.clock.getElapsedTime() / 3600)))
+        (znear >= 120 && type > (3 - Math.min(0.2, znear/1000) - Math.min(0.1, this.clock.getElapsedTime() / 3600)))
       ) {
         mob = new Reaper(new THREE.Vector2(x, y), new THREE.Vector2(0, -1));
       } else if (
         (firstEncounter && znear === 60) ||
-        (znear >= 20 && type > (2.8 - Math.min(0.3, znear/600) - Math.min(0.2, this.clock.getElapsedTime() / 1800)))
+        (znear >= 60 && type > (2.8 - Math.min(0.3, znear/600) - Math.min(0.2, this.clock.getElapsedTime() / 1800)))
       ) {
         mob = new Bull(new THREE.Vector2(x, y), new THREE.Vector2(0, -1));
         firstEncounter = false;
