@@ -88,6 +88,60 @@ export function attack(arm: THREE.Object3D, onComplete?: () => void): void {
     });
 }
 
+export function scytheAttack(arm: THREE.Object3D, onComplete?: () => void): void {
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  const att = arm.getObjectByName('rightHandAtt')!;
+  const initialRotation = arm.rotation.clone();
+  const initialAttRotation = att.rotation.clone();
+
+  const timing = 0.1;
+
+  const timeline = new TimelineLite();
+  const rotTimeline = new TimelineLite();
+  rotTimeline
+    .to(arm.rotation, timing, {
+      x: initialRotation.x - Math.PI / 4,
+      y: initialRotation.y,
+      z: initialRotation.z - Math.PI / 4,
+    })
+    .to(arm.rotation, timing, {
+      x: initialRotation.x + Math.PI / 4,
+      y: initialRotation.y + Math.PI / 2,
+      z: initialRotation.z + Math.PI / 4,
+      ease: Power4.easeOut,
+      delay: timing / 2,
+    })
+    .to(arm.rotation, timing, {
+      x: initialRotation.x,
+      y: initialRotation.y,
+      z: initialRotation.z,
+      onComplete,
+      onCompleteParams: []
+    });
+  
+  const scytheTimeline = new TimelineLite();
+  scytheTimeline
+    .to(att.rotation, timing, {
+      x: initialAttRotation.x - Math.PI / 2,
+      y: initialAttRotation.y,
+      z: initialAttRotation.z - Math.PI / 2,
+    })
+    .to(att.rotation, timing, {
+      x: initialAttRotation.x + Math.PI / 2,
+      y: initialAttRotation.y + Math.PI / 2,
+      z: initialAttRotation.z - Math.PI / 4,
+      ease: Power4.easeOut,
+      delay: timing / 2,
+    })
+    .to(att.rotation, timing, {
+      x: initialAttRotation.x,
+      y: initialAttRotation.y,
+      z: initialAttRotation.z
+    });
+  
+  timeline.add(rotTimeline).add(scytheTimeline, 0);
+}
+
 export function die(mesh: HumanoidMesh, dir: THREE.Vector3, onComplete?: () => void): void {
   const timing = 0.1;
   const rotationY = (dir.x < 0 ? Math.PI / 2 : dir.x > 0 ? Math.PI * 3 / 2 : dir.z > 0 ? 0 : Math.PI);

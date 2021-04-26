@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { COLOR } from './const';
-import { Bull, Ghost, Hero, Humanoid, Mob, Zombie } from './humanoid';
+import { Bull, Ghost, Hero, Humanoid, Mob, Reaper, Zombie } from './humanoid';
 import { createBrownFloorTile, createDeepBrownFloorTile } from './models/floor';
 import { PROPS, Props } from './props';
 
@@ -147,14 +147,18 @@ export class Game {
 
       let mob: Mob;
       if (
+        (znear >= 20 && type > (3 - Math.min(0.2, znear/1000) - Math.min(0.1, this.clock.getElapsedTime() / 3600)))
+      ) {
+        mob = new Reaper(new THREE.Vector2(x, y), new THREE.Vector2(0, -1));
+      } else if (
         (firstEncounter && znear === 60) ||
-        (znear >= 60 && type > (3 - Math.min(0.3, znear/600) - Math.min(0.2, this.clock.getElapsedTime() / 1800)))
+        (znear >= 20 && type > (2.8 - Math.min(0.3, znear/600) - Math.min(0.2, this.clock.getElapsedTime() / 1800)))
       ) {
         mob = new Bull(new THREE.Vector2(x, y), new THREE.Vector2(0, -1));
         firstEncounter = false;
       } else if (
         (firstEncounter && znear === 20) ||
-        (znear >= 20 && type > (2.7 - Math.min(0.5, znear/500) - Math.min(0.2, this.clock.getElapsedTime() / 1200)))
+        (znear >= 20 && type > (2.5 - Math.min(0.5, znear/500) - Math.min(0.2, this.clock.getElapsedTime() / 1200)))
       ) {
         mob = new Ghost(new THREE.Vector2(x, y), new THREE.Vector2(0, -1));
         firstEncounter = false;

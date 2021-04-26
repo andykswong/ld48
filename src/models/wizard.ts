@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { BufferGeometryUtils } from 'three/examples/jsm/utils/BufferGeometryUtils';
 import { BROWN_MAT, DARK_PURPLE_MAT, PURPLE_MAT, SKIN_MAT } from '../material';
-import { createHat, createStaff, createSword } from './items';
+import { createHat, createSword } from './items';
 
 export class WizardMesh {
   public mesh = new THREE.Group();
@@ -120,8 +120,8 @@ export class WizardMesh {
     rightHandAtt.rotateX(Math.PI / 4);
     rightHand.add(rightHandAtt);
 
-    const staff = createSword();
-    rightHandAtt.add(staff);
+    const weapon = createSword();
+    rightHandAtt.add(weapon);
     this.rightAtt = rightHandAtt;
 
     return [leftArm, rightArm];

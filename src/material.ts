@@ -43,6 +43,12 @@ export const WOOD_MAT = new THREE.MeshPhongMaterial({
   specular: COLOR.lightstone
 });
 
+export const DULL_WOOD_MAT = new THREE.MeshPhongMaterial({
+  shininess: 10,
+  color: COLOR.wood,
+  specular: COLOR.darkbrown
+});
+
 export const FLOOR_WHITE_MAT = new THREE.MeshPhongMaterial({
   shininess: 20,
   color: COLOR.floor,
@@ -67,6 +73,13 @@ export const GHOST_MAT = new THREE.MeshPhongMaterial({
   shininess: 0,
   color: COLOR.white,
   opacity: 0.5,
+  transparent: true,
+});
+
+export const REAPER_MAT = new THREE.MeshPhongMaterial({
+  shininess: 10,
+  color: COLOR.black,
+  opacity: 0.75,
   transparent: true,
 });
 

@@ -1,7 +1,8 @@
 import * as THREE from 'three';
-import { attack, die, jump, rotate, zombieAttack } from './animations';
+import { attack, die, jump, rotate, scytheAttack, zombieAttack } from './animations';
 import { GhostMesh } from './models/ghost';
 import { HumanoidMesh } from './models/humanoid';
+import { ReaperMesh } from './models/reaper';
 import { WizardMesh } from './models/wizard';
 import { BullMesh } from './models/zbull';
 import { ZombieMesh } from './models/zombie';
@@ -12,7 +13,8 @@ export const HUMANOID_TYPE = {
   Hero: 0,
   Zombie: 1,
   Ghost: 2,
-  Bull: 3
+  Bull: 3,
+  Reaper: 4
 };
 
 export class Humanoid {
@@ -250,10 +252,12 @@ export class Bull extends Mob {
   }
 
   public takeTurn(state: ObjectState, onComplete?: (hitHero: boolean) => void): void {
-    const dx = state.hero.position.x - this.position.x;
-    const dy = state.hero.position.y - this.position.y;
-    const sx = Math.sign(dx);
-    const sy = Math.sign(dy);
+    const fdx = state.hero.position.x - this.position.x;
+    const fdy = state.hero.position.y - this.position.y;
+    const sx = Math.sign(fdx);
+    const sy = Math.sign(fdy);
+    const dx = sx * Math.min(6, Math.abs(fdx));
+    const dy = sy * Math.min(6, Math.abs(fdy));
 
     const dir: [number, number][] = [];
     if (sx) {
@@ -285,7 +289,92 @@ export class Bull extends Mob {
       }
     }
 
-    if (x === dx && y === dy) {
+    if (x === fdx && y === fdy) {
+      this.attack(this.direction);
+      this.move(new THREE.Vector2(x, y), () => onComplete?.(true));
+    } else if (Math.abs(x) > 0 || Math.abs(y) > 0) {
+      if (mobKilled) {
+        mobKilled.die(new THREE.Vector2(Math.sign(x), Math.sign(y)), ((i) => () => {
+          state.mobs[i].detach();
+          state.mobs[i] = state.mobs[state.mobs.length - 1];
+          state.mobs.pop();
+        })(state.mobs.indexOf(mobKilled)));
+      }
+      this.move(new THREE.Vector2(x, y), () => onComplete?.(false));
+    } else {
+      this.rotate(new THREE.Vector2(sx, sy));
+      onComplete?.(false);
+    }
+  }
+}
+
+export class Reaper extends Mob {
+  constructor(position: THREE.Vector2, direction: THREE.Vector2 = new THREE.Vector2(0, -1)) {
+    super(HUMANOID_TYPE.Reaper, new ReaperMesh(), position, direction);
+    this.name = 'Reaper';
+  }
+
+  public attack(direction: THREE.Vector2, onComplete?: () => void): void {
+    rotate(this.mesh.mesh, new THREE.Vector3(direction.x, 0, -direction.y));
+    this.direction.set(Math.sign(direction.x), Math.sign(direction.y));
+    scytheAttack(this.mesh.rightArm, () => {
+      onComplete?.();
+    });
+    Sound.Slash.load();
+    Sound.Slash.play();
+  }
+
+  public takeTurn(state: ObjectState, onComplete?: (hitHero: boolean) => void): void {
+    const fdx = state.hero.position.x - this.position.x;
+    const fdy = state.hero.position.y - this.position.y;
+    const sx = Math.sign(fdx);
+    const sy = Math.sign(fdy);
+    const dx = sx * Math.min(6, Math.abs(fdx));
+    const dy = sy * Math.min(6, Math.abs(fdy));
+
+    const dir: [number, number][] = [];
+    if (sx) {
+      if (sy) {
+        dir.push([sx, sy], [sx, 0], [0, sy]);
+      } else {
+        dir.push([sx, 0]);
+      }
+    } else {
+      if (sy) {
+        dir.push([0, sy]);
+      } else { // should not happen
+        onComplete?.(false);
+        return;
+      }
+    }
+
+    let x = 0, y = 0;
+    let mobKilled: Mob | null = null;
+    for (const [sx, sy] of dir) {
+      x = 0;
+      y = 0;
+      for (x = 0, y = 0; (sx && Math.abs(x) < Math.abs(dx)) || (sy && Math.abs(y) < Math.abs(dy)); x += sx, y += sy) {
+        if (
+          this.position.x + x + sx < -4 || this.position.x + x + sx > 4 ||
+          (
+            Math.abs(this.position.x + x + sx - state.hero.position.x) + Math.abs(this.position.y + y + sy - state.hero.position.y) === 1 &&
+            Math.abs(this.position.x + x + 2 * sx - state.hero.position.x) + Math.abs(this.position.y + y + 2 * sy - state.hero.position.y) !== 0
+          )
+        ) {
+          break;
+        }
+        mobKilled = getAtPos(state.mobs, this.position.x + x + sx, this.position.y + y + sy);
+        if (mobKilled) {
+          x += sx, y += sy;
+          break;
+        }
+      }
+      if (Math.abs(x) > 0 || Math.abs(y) > 0) {
+        break;
+      }
+    }
+
+    if (x === fdx && y === fdy) {
       this.attack(this.direction);
       this.move(new THREE.Vector2(x, y), () => onComplete?.(true));
     } else if (Math.abs(x) > 0 || Math.abs(y) > 0) {

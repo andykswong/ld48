@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { BufferGeometryUtils } from 'three/examples/jsm/utils/BufferGeometryUtils';
-import { DARK_PURPLE_MAT, LIGHT_STONE_MAT, SHINY_MAT, WOOD_MAT } from '../material';
+import { DARK_PURPLE_MAT, DULL_WOOD_MAT, LIGHT_STONE_MAT, SHINY_MAT, WOOD_MAT } from '../material';
 
 const hatBtmGeo = new THREE.CylinderGeometry(2.3, 2.2, 0.2, 6);
 hatBtmGeo.translate(0, 0.1, 0);
@@ -24,6 +24,25 @@ swordBladeGeo.translate(0, 4, 0);
 const swordTipGeo = new THREE.ConeGeometry(0.2, 1.5, 4);
 swordTipGeo.translate(0, 7.5, 0);
 const swordGeo = BufferGeometryUtils.mergeBufferGeometries([swordBladeGeo, swordTipGeo]);
+
+
+const scytheWoodGeo = new THREE.BoxGeometry(0.5, 15, 0.5);
+scytheWoodGeo.translate(0, 4, 0);
+
+const scytheBladeGeo = (() => {
+  const scytheBladeGeo = new THREE.BoxGeometry(6, 0.5, 0.5);
+  scytheBladeGeo.translate(2.5, 10, 0);
+  const scytheBlade2Geo = new THREE.ConeGeometry(0.35, 4, 4);
+  scytheBlade2Geo.rotateZ(-Math.PI * .7);
+  scytheBlade2Geo.translate(7, 8.8, 0);
+  return BufferGeometryUtils.mergeBufferGeometries([scytheBladeGeo, scytheBlade2Geo]);
+})();
+
+export function createScythe(): THREE.Mesh {
+  const mesh = new THREE.Mesh(scytheWoodGeo, DULL_WOOD_MAT);
+  mesh.add(new THREE.Mesh(scytheBladeGeo, SHINY_MAT));
+  return mesh;
+}
 
 export function createHat(): THREE.Mesh {
   return new THREE.Mesh(hatGeo, DARK_PURPLE_MAT);
